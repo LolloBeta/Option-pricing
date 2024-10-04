@@ -5,7 +5,7 @@ import numpy as np
 #so each possible value is S0*u**j*d**(i-j)
 #The main assumptions are: finite number of steps (discrete time), known volatility, which is equal at each step,
 #risk neutral valuation
-def Binomial_tree_V1 (S0,K,T,r,N,sigma,t):
+def Binomial_tree_V1 (S0,K,T,r,sigma,t,N):
     #T=expiration time, S=stock price, K=strike price, r=interest rate, sigma=volatility,
     #n=height of the binomial tree, t=type of option (0 call, 1 put)
     deltaT=T/N
@@ -22,7 +22,7 @@ def Binomial_tree_V1 (S0,K,T,r,N,sigma,t):
         
     P = np.zeros(N+1) #values of the contract at the end
     for j in range(0,N+1):
-        if(t==0):
+        if(t=='C'):
             P[j] = max(0, S[j]-K) #it's a call
         else:
             P[j] = max(0, K-S[j]) #it's a put
@@ -33,7 +33,7 @@ def Binomial_tree_V1 (S0,K,T,r,N,sigma,t):
 
     return P[0] #the initial price
 
-def Binomial_tree_V2 (S0,K,T,r,N,sigma,t):
+def Binomial_tree_V2 (S0,K,T,r,sigma,t,N):
     #T=expiration time, S=stock price, K=strike price, r=interest rate, sigma=volatility,
     #n=height of the binomial tree, t=type of option (0 call, 1 put)
     deltaT=T/N
@@ -45,7 +45,7 @@ def Binomial_tree_V2 (S0,K,T,r,N,sigma,t):
     #price of the stock at the end
     S= S0*d**(np.arange(N,-1,-1))*u**(np.arange(0,N+1,1))
         
-    if(t==0):
+    if(t=='C'):
         P = np.maximum(S-K,np.zeros(N+1))
     else:
         P = np.maximum(K-S,np.zeros(N+1))
@@ -54,6 +54,5 @@ def Binomial_tree_V2 (S0,K,T,r,N,sigma,t):
         P=disc*(p*P[1:i+1]+(1-p)*P[0:i])
     return P[0] #the initial price
         
-print(Binomial_tree_V1 (100,100,1,0.06,1000,1.1,0))
-print(Binomial_tree_V2 (100,100,1,0.06,1000,1.1,0))
-
+print(Binomial_tree_V1 (100,100,1,0.06,1.1,'C',1000))
+print(Binomial_tree_V2 (100,100,1,0.06,1.1,'C',1000))
